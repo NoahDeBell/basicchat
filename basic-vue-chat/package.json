@@ -73,7 +73,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jmaczan/basic-vue-chat.git"
+    "url": "git+https://github.com/noahdebell/basicchat.git"
   },
   "keywords": [
     "vue",
