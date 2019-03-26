@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="X-UA-Compatible" content="">
         <title>Page Title</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="main.js"></script>
@@ -19,6 +19,17 @@
         <h1>LIT FAM</h1>
         <script>
             Bots.init({ appId: '5c99fdf8bf58b90010bc14b5' });
+            // document.getElementsByClassName("fa fa-times", onclick = function () {
+            //     Bots.destroy();
+            //     console.log("fa fa-times");
+            // });
+
+            Bots.on('destroy', function () {
+                console.log('the widget is destroyed!');
+            });
+
+            Bots.destroy();
+
         </script>
     </body>
 
