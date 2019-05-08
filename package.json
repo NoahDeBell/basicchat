@@ -8,18 +8,19 @@
     "bots-node-sdk": "bots-node-sdk",
     "help": "npm run bots-node-sdk -- --help",
     "prepack": "npm run bots-node-sdk -- --pack --dry-run",
-    "start": "npm run bots-node-sdk -- --service ."
+    "start": "npm run bots-node-sdk -- service ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "body-parser": "^1.19.0",
     "request": "^2.88.0",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "@oracle/bots-node-sdk": "^2.1.6",
-    "express": "^4.16.3"
+    "express": "^4.16.4"
   }
 }
