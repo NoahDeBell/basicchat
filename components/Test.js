@@ -1,5 +1,8 @@
 'use strict';
-  var axios = require('axios');
+
+var axios = require('axios');
+// const { MessageModel } = require('@oracle/bots-node-sdk/lib');
+
 module.exports = {
   metadata: () => ({
     name: 'TestingComponent',
@@ -8,31 +11,39 @@ module.exports = {
     supportedActions: []
   }),
   invoke: (conversation, done) => {
-    // perform conversation tasks.
-    getTest().then((data) => {
+    //buildmessage model
+    getReports().then((data) => {
+      var cards = [];
       if(data.status == "OK"){
-      var array = data.results;
-      // for (let i = 0; i < array.length; i++) {
-        // const element = array[i];
-        const messageItem ={
-          title:'Test :D',
-          description:'08/05/2019',
-          size: 'compact',
-          mediaType: 'jpeg'
-        };
+        var array = data.results;
+          for (let i = 0; i < array.length; i++) {
 
-        conversation
-          .reply({
-            type: 'text',
-            items: [messageItem]
-          });
-        }
-        done();
-      // }
-      });
+            const element = array[0];
 
-      function getTest() {
-        return axios.get("https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/reports/1120575").then((res) => {
+            let cardObj = conversation.MessageModel().cardObject(element.PURPOSE,element.PURPOSE,null,null,null);
+            cards.push(cardObj);
+
+
+            //build messageItem
+            // messageItem.push(
+            //   MessageModel.cardObject({
+            //     title: toString(element.PREPARER_ID),
+            //     description: element.PURPOSE
+            //   })
+            // );
+            // messageItem.push({
+            //   title : element.EXPENSE_REPORT_ID + ' ' + element.EXPENSE_STATUS_CODE,
+            //   description : element.PURPOSE
+            // });
+          }
+      }
+      var cardResponseMessage = conversation.MessageModel().cardConversationMessage('horizontal',cards);
+      conversation.reply(cardResponseMessage);
+      done();
+    });
+
+      function getReports() {
+        return axios.get("https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/skynet").then((res) => {
           return res.data;
         });
       }
