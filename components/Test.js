@@ -18,11 +18,11 @@ module.exports = {
         var array = data.results;
           for (let i = 0; i < array.length; i++) {
 
-            const element = array[0];
-
-            let cardObj = conversation.MessageModel().cardObject(element.PURPOSE,element.PURPOSE,null,null,null);
+            const element = array[i];
+            var title  = JSON.stringify(element.EXPENSE_REPORT_ID);
+            var description = element.PURPOSE;
+            let cardObj = conversation.MessageModel().cardObject(title,description,null,null,null);
             cards.push(cardObj);
-
 
             //build messageItem
             // messageItem.push(
@@ -43,7 +43,7 @@ module.exports = {
     });
 
       function getReports() {
-        return axios.get("https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/skynet").then((res) => {
+        return axios.get("https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/reports/1120575").then((res) => {
           return res.data;
         });
       }
