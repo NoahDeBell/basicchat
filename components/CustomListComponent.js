@@ -10,13 +10,15 @@ module.exports = {
                 "selectedReport":{
                     "type" : "string",
                     "required" : true
-                }
+                },
+                separateBubbles: false
             },
             supportedActions: []
         }
     ),
     invoke: (conversation, done) => {
-        const { reportId } = conversation.properties().selectedReport;
+        const { selectedReport } = conversation.properties();
+
             getExpenses().then((data) => {
                 
                 if(data.status == "OK"){
@@ -39,12 +41,27 @@ module.exports = {
                         expenses[expense.EXPENSE_ID] = expense.DESCRIPTION;
                         totalAmount = totalAmount + expense.REIMBURSEABLE_AMOUNT;
                     }
-                    conversation.MessageModel()
-                    .textConversationMessage(
-                        "report id: " + reportId +  "\n" 
-                        + "expenses in the report: " + expenses  + "\n"
-                        + "total to reimburse: " + totalAmount
-                    );
+                        // "report id: " + selectedReport +  "\n" + "expenses in the report: " + expenses  + "\n"+ "total to reimburse: " + totalAmount
+
+                    // conversation.reply(`Here are the results for report: ${selectedReport}`);
+                    // conversation.reply(`Number of expenses within report: ${numberOfExpenses}`);
+                    // conversation.reply({
+                    //     type:"text"
+                    // })
+                    // // conversation.reply({
+                        // //     text:`Number of expenses within report: ${numberOfExpenses}. Expenses within the report ${expenses}.The total amount to be reimbursed: ${totalAmount}`
+                        // // });
+                    //     var rawMessage = conversation.MessageModel().rawConversationMessage(
+                    //         {
+                    //             type: "text",
+                    //             text: `Here are the results for report: ${selectedReport}. Number of expenses within report: ${numberOfExpenses}.`,
+                    //             iteratorVariale: expenses,
+                    //             separateBubbles: false
+                    //         }
+                    //         );
+                    // conversation.reply(rawMessage);
+                    conversation.reply(`The total amount to be reimbursed: ${totalAmount}`);
+                    conversation.keepTurn(false);
                     done();
                 }else{
                     conversation.reply("Something went wrong. Please try again later");
@@ -55,8 +72,10 @@ module.exports = {
 
         function getExpenses()
         {
-            return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/expenses/1122507-1`).then((res)=> {
+            return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/expenses/1122507-1`).then((res) => {
                 return res.data;
+            }).catch(error => {
+                console.log("error", error);
             });
         }
     }
