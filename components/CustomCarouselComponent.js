@@ -8,6 +8,10 @@ module.exports = {
     properties: {
       "selectedReport" :
       {
+        "type": "string"
+      },
+      "userId" :
+      {
         "type": "string",
         "required": true
       }
@@ -16,7 +20,8 @@ module.exports = {
   }),
   invoke: (conversation, done) => {
     //definement variables that retrieve properties from the component
-    const selectedReport = conversation.properties().selectedReport;
+    const { selectedReport }  = conversation.properties();
+    const { userId }  = conversation.properties();
 
     /**
      * psst this is a secret. 
@@ -37,38 +42,52 @@ module.exports = {
     {
       //buildmessage model
       getReports().then((data) => {
-        var cards = [];
         if(data.status == "OK"){
+          var cards = [];
           //array variable filled with results from the http request
           var array = data.results;
             for (let i = 0; i < array.length; i++) {
-
+              //define the element we currently on
               const element = array[i];
               
-              var title  = JSON.stringify(element.EXPENSE_REPORT_ID);
+              //title of the current report
+              var titleReport  = JSON.stringify(element.EXPENSE_REPORT_ID);
+              //description of the current report
               var description = element.PURPOSE;
-              var statusCode = element.EXPENSE_STATUS_CODE;
+              //date of current report
+              var date = element.EXPENSE_REPORT_DATE;
+              var sliced = date.slice(0,10);//here we parse the date so we can only see YYYY/MM/DD
+              //status message of current report as to where it is in the process of reimbursement
+              var statusMessage = element.STATUS;
+              //string we return in a card object to the user
+              var descriptString = description +" Datum: " + sliced;
+              //button with some text and actions/variables defined within
               let button = 
-              conversation.MessageModel()
-                .postbackActionObject(
-                  "See details" + title + " " + statusCode,
-                  null,
+              conversation.MessageModel().postbackActionObject("See details ",null,
                   {
-                    selectedReport : title,
+                    selectedReport : titleReport,
                     stateToken : secretToken
                   }
                 );
 
-              let cardObj = conversation.MessageModel().cardObject(title,description,null,null,[button]);
+              //building the card object as a whole
+              let cardObj = conversation.MessageModel().cardObject("id: " + titleReport + " status: " + statusMessage,descriptString,null,null,[button]);
+              //push a singular card object to the cards array
               cards.push(cardObj);
             }
-        }
-
+        /**
+         * here we build a message with horizontal alignment
+         * it will reply a generic message and a sideways scrollable list of cards
+         */
         var cardResponseMessage = conversation.MessageModel().cardConversationMessage('horizontal',cards);
-        conversation.reply("These 10 reports belong to you. Click the details button to see details");
+        conversation.reply(`These ${array.length} reports belong to you. Click the details button to see details`);
         conversation.reply(cardResponseMessage);
 
         done();
+        }else{
+          //on error from the requested call, we would like to sent a message that something went wrong
+          conversation.reply("Something went wrong, or you dont have any expenses filled in.");
+        }
       })
       .catch(function(err)
         {
@@ -79,7 +98,7 @@ module.exports = {
     }
     
       function getReports() {
-        return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/reports/1120575`).then((res) => {
+        return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/reports/${ userId }`).then((res) => {
           return res.data;
         });
       }

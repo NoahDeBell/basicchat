@@ -11,7 +11,6 @@ module.exports = {
                     "type" : "string",
                     "required" : true
                 },
-                separateBubbles: false
             },
             supportedActions: []
         }
@@ -31,23 +30,19 @@ module.exports = {
                 for (let i = 0; i < array.length; i++)
                     {
                         const expense = array[i];
-                        /**
-                         * structure:
-                         *  rapport id : selectedReport
-                         *  number of expenses: numberOfExpenses
-                         *  expense id : description
-                         *  totale amount: totalAmount
-                         */
+
                         expenses[expense.EXPENSE_ID] = expense.DESCRIPTION;
                         totalAmount = totalAmount + expense.REIMBURSEABLE_AMOUNT;
                     }
-                        // "report id: " + selectedReport +  "\n" + "expenses in the report: " + expenses  + "\n"+ "total to reimburse: " + totalAmount
+                    // "report id: " + selectedReport +  "\n" + "expenses in the report: " + expenses  + "\n"+ "total to reimburse: " + totalAmount
 
                     // conversation.reply(`Here are the results for report: ${selectedReport}`);
                     // conversation.reply(`Number of expenses within report: ${numberOfExpenses}`);
                     // conversation.reply({
-                    //     type:"text"
+                    //     type:"text",
+                    //     iteratorVariable: expenses
                     // })
+
                     // // conversation.reply({
                         // //     text:`Number of expenses within report: ${numberOfExpenses}. Expenses within the report ${expenses}.The total amount to be reimbursed: ${totalAmount}`
                         // // });
@@ -60,8 +55,10 @@ module.exports = {
                     //         }
                     //         );
                     // conversation.reply(rawMessage);
-                    conversation.reply(`The total amount to be reimbursed: ${totalAmount}`);
+                    conversation.reply("Placeholder, we retrieved data");
+                    // conversation.reply(`The total amount to be reimbursed: ${totalAmount}`);
                     conversation.keepTurn(false);
+                    conversation.transition();
                     done();
                 }else{
                     conversation.reply("Something went wrong. Please try again later");
