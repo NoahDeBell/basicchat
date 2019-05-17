@@ -55,8 +55,17 @@ module.exports = {
                     //         }
                     //         );
                     // conversation.reply(rawMessage);
+                    let expensesOut = '';
+
+                    expenses.forEach(element => {
+                        expensesOut += element + "\n";
+                    });
+
+
+
                     conversation.reply("Placeholder, we retrieved data");
                     // conversation.reply(`The total amount to be reimbursed: ${totalAmount}`);
+                    conversation.reply(expensesOut);
                     conversation.keepTurn(false);
                     conversation.transition();
                     done();
@@ -65,7 +74,12 @@ module.exports = {
                     done();
                 }
                 done();
-            });
+            }).catch(function(err)
+            {
+              //handle error
+              console.log(err);
+            }
+          );
 
         function getExpenses()
         {
