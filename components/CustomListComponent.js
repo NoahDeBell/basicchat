@@ -76,10 +76,10 @@ module.exports = {
                 done();
             }).catch(function(err)
             {
-              //handle error
-              console.log(err);
+                //handle error
+                    console.log(err);
             }
-          );
+            );
 
         function getExpenses()
         {
