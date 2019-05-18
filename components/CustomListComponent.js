@@ -18,54 +18,54 @@ module.exports = {
     invoke: (conversation, done) => {
         const { selectedReport } = conversation.properties();
 
+            /**
+             * execute http request on the load of our component
+             */
             getExpenses().then((data) => {
-                
+                /**
+                 * check if there is data gathered from our api
+                 * if so, we parse it and send it to the user
+                 * if there is something wrong with the res var, we print an error message to the user
+                 */
                 if(data.status == "OK"){
                 //array variable filled with expenses
                 var array = data.results;
                 //number of expenses within selected report
                 var numberOfExpenses = array.length;
+                //total amount to be reimbursed, later used to print towards the user
                 var totalAmount = 0;
                 var expenses = [];
+                //loop over the returned object building our expenses array
                 for (let i = 0; i < array.length; i++)
                     {
                         const expense = array[i];
-
+                        /**
+                         *  writing the results towards the expenses array, later on the be used
+                         *  to build a string which we return to the user
+                        */
                         expenses[expense.EXPENSE_ID] = expense.DESCRIPTION;
+                        //simple math for counting the total amount to be reimbursed
                         totalAmount = totalAmount + expense.REIMBURSEABLE_AMOUNT;
                     }
-                    // "report id: " + selectedReport +  "\n" + "expenses in the report: " + expenses  + "\n"+ "total to reimburse: " + totalAmount
-
-                    // conversation.reply(`Here are the results for report: ${selectedReport}`);
-                    // conversation.reply(`Number of expenses within report: ${numberOfExpenses}`);
-                    // conversation.reply({
-                    //     type:"text",
-                    //     iteratorVariable: expenses
-                    // })
-
-                    // // conversation.reply({
-                        // //     text:`Number of expenses within report: ${numberOfExpenses}. Expenses within the report ${expenses}.The total amount to be reimbursed: ${totalAmount}`
-                        // // });
-                    //     var rawMessage = conversation.MessageModel().rawConversationMessage(
-                    //         {
-                    //             type: "text",
-                    //             text: `Here are the results for report: ${selectedReport}. Number of expenses within report: ${numberOfExpenses}.`,
-                    //             iteratorVariale: expenses,
-                    //             separateBubbles: false
-                    //         }
-                    //         );
-                    // conversation.reply(rawMessage);
+                    //empty string for building the expense list
                     let expensesOut = '';
 
+                    //we build the expenses 'list' string within this foreach
                     expenses.forEach(element => {
                         expensesOut += element + "\n";
                     });
 
-
-
-                    conversation.reply("Placeholder, we retrieved data");
-                    // conversation.reply(`The total amount to be reimbursed: ${totalAmount}`);
+                    /**
+                     * down here will be the following replies:
+                     *      Report id
+                     *      total amount of expenses
+                     *      'list of expenses'
+                     *      total amount to be reimbursed
+                     */
+                    conversation.reply(`The expenses for report: ${ selectedReport }`);
+                    conversation.reply(`Report contains ${ totalAmount } of expense(s)`);
                     conversation.reply(expensesOut);
+                    conversation.reply(`The total amount to be reimbursed: ${ totalAmount }`);
                     conversation.keepTurn(false);
                     conversation.transition();
                     done();
@@ -73,7 +73,6 @@ module.exports = {
                     conversation.reply("Something went wrong. Please try again later");
                     done();
                 }
-                done();
             }).catch(function(err)
             {
                 //handle error
@@ -81,13 +80,19 @@ module.exports = {
             }
             );
 
-        function getExpenses()
-        {
-            return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/expenses/1122507-1`).then((res) => {
-                return res.data;
-            }).catch(error => {
-                console.log("error", error);
-            });
-        }
+            /**
+             *  HHTP request to our API
+             *  @param selectedReport
+             *  @param userId
+             *  @return JSON object containing expenses
+            */
+            function getExpenses()
+            {
+                return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/expenses/1122507-1`).then((res) => {
+                    return res.data;
+                }).catch(error => {
+                    console.log("error", error);
+                });
+            }
     }
 }
