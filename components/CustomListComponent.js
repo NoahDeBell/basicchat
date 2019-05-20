@@ -1,5 +1,10 @@
 'use strict';
-
+/**
+ * we retrieve some environment variables from the config file, so that if a variable changes we only have to edit it a centered file
+ *  not every file we use it int
+*/
+const { baseUrl , expensesEnd } = require('../config');
+//base variable for executing http requests
 var axios = require('axios');
 
 module.exports = {
@@ -88,7 +93,7 @@ module.exports = {
             */
             function getExpenses()
             {
-                return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/expenses/1122507-1`).then((res) => {
+                return axios.get(baseUrl + expensesEnd + `1122507-1`).then((res) => {
                     return res.data;
                 }).catch(error => {
                     console.log("error", error);
