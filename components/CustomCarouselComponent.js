@@ -14,13 +14,19 @@ module.exports = {
       {
         "type": "string",
         "required": true
+      },
+      "apiUrl":
+      {
+        "type": "string",
+        "required": true
       }
     },
-    supportedActions: []
+    supportedActions: ["selectReport"]
   }),
   invoke: (conversation, done) => {
     //definement variables that retrieve properties from the component
     const { selectedReport }  = conversation.properties();
+    const { apiUrl } = conversation.properties();
     const { userId }  = conversation.properties();
 
     /**
@@ -35,7 +41,7 @@ module.exports = {
       let postbackLoad = conversation.postback();
       conversation.variable(selectedReport, postbackLoad.selectedReport);
       conversation.keepTurn(true);
-      conversation.transition();
+      conversation.transition("selectReport");
       done();
     }
     else
@@ -80,37 +86,29 @@ module.exports = {
          * it will reply a generic message and a sideways scrollable list of cards
          */
         var cardResponseMessage = conversation.MessageModel().cardConversationMessage('horizontal',cards);
-        conversation.reply(`These ${array.length} reports belong to you. Click the details button to see details`);
+        conversation.reply(`These ${array.length} reports belong to you. Click the details button to see details`); 
         conversation.reply(cardResponseMessage);
 
-        done();
-        }else{
+      }else{
           //on error from the requested call, we would like to sent a message that something went wrong
           conversation.reply("Something went wrong, or you dont have any expenses filled in.");
         }
+      done();
       })
       .catch(function(err)
         {
           //handle error
           console.log(err);
+          conversation.reply("Something went wrong, or you dont have any expenses filled in.");
+          done();
         }
       );
     }
     
       function getReports() {
-        return axios.get(`https://skapi9-acnoraclesg01.gbcom-south-1.oraclecloud.com/api/v2/reports/${ userId }`).then((res) => {
+        return axios.get(`${apiUrl}${ userId }`).then((res) => {
           return res.data;
         });
       }
   }
 };
-
-/**
- * 
- * todo
- * postback for state transfer
- * properties definement
- * state transition <- where we show the selected variables
- * component for displaying some list of expenses within a report
- * 
- */

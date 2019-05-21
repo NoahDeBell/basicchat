@@ -1,9 +1,5 @@
 'use strict';
-/**
- * we retrieve some environment variables from the config file, so that if a variable changes we only have to edit it a centered file
- *  not every file we use it int
-*/
-const { baseUrl , expensesEnd } = require('../config');
+
 //base variable for executing http requests
 var axios = require('axios');
 
@@ -12,16 +8,29 @@ module.exports = {
         {
             name: 'CustomListComponent',
             properties: {
-                "selectedReport":{
+                "selectedReport":
+                {
                     "type" : "string",
                     "required" : true
                 },
+                "userId":
+                {
+                    "type": "string",
+                    "required":true
+                },
+                "apiUrl":
+                {
+                    "type":"string",
+                    "required":true
+                }
             },
             supportedActions: []
         }
     ),
     invoke: (conversation, done) => {
+        const { userId } = conversation.properties();
         const { selectedReport } = conversation.properties();
+        const { apiUrl } = conversation.properties();
 
             /**
              * execute http request on the load of our component
@@ -73,15 +82,16 @@ module.exports = {
                     conversation.reply(`The total amount to be reimbursed: ${ totalAmount }`);
                     conversation.keepTurn(false);
                     conversation.transition();
-                    done();
                 }else{
                     conversation.reply("Something went wrong. Please try again later");
-                    done();
                 }
+                done();
             }).catch(function(err)
             {
                 //handle error
-                    console.log(err);
+                console.log(err);
+                conversation.reply("Something went wrong, or you dont have any expenses filled in.");
+                done();
             }
             );
 
@@ -93,7 +103,7 @@ module.exports = {
             */
             function getExpenses()
             {
-                return axios.get(baseUrl + expensesEnd + `1122507-1`).then((res) => {
+                return axios.get(`${ apiUrl }${ userId }-${ selectedReport }`).then((res) => {
                     return res.data;
                 }).catch(error => {
                     console.log("error", error);
