@@ -62,11 +62,12 @@ invoke: (conversation, done) => {
             var description = element.PURPOSE;
             //date of current report
             var date = element.EXPENSE_REPORT_DATE;
-            var sliced = date.slice(0,10);//here we parse the date so we can only see YYYY/MM/DD
-            //status message of current report as to where it is in the process of reimbursement
-            var statusMessage = element.STATUS;
+            var dateSliced = date.slice(0,10);//here we parse the date so we can only see YYYY/MM/DD
+            //string for the date the expense is reimbursed
+            var reimbursedDate = element.CASH_EXPENSE_PAID_DATE;
+            var reimbursedSliced = reimbursedDate.slice(0,10);
             //string we return in a card object to the user
-            var descriptString = description +" Datum: " + sliced;
+            var descriptString = description +" Date: " + dateSliced;
             //button with some text and actions/variables defined within
             let button = 
             conversation.MessageModel().postbackActionObject("See details ",null,
@@ -77,7 +78,7 @@ invoke: (conversation, done) => {
                 );
 
             //building the card object as a whole
-            let cardObj = conversation.MessageModel().cardObject("id: " + titleReport + " status: " + statusMessage,descriptString,null,null,[button]);
+            let cardObj = conversation.MessageModel().cardObject("Id: " + titleReport + " date: "+ reimbursedSliced , descriptString , null , null , [button] );
             //push a singular card object to the cards array
             cards.push(cardObj);
             }
