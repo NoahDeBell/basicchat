@@ -1,0 +1,29 @@
+{
+    "botId": "xyz",
+    "platformVersion": "1.1",
+    "context": {
+        "variables": {}
+    },
+    "properties": {
+        "userId":"1120575",
+        "selectedReport":"1",
+        "apiUrl":"localhost:8089/api/v2/expenses/"
+    },
+    "message": {
+        "payload": {},
+        "messagePayload": {},
+        "retryCount": 0,
+        "channelConversation": {
+            "botId": "TestBotLocalHost",
+            "sessionId": "123456789",
+            "type": "Testing",
+            "userId": "1120575",
+            "channelId": "Testing"
+        },
+        "componentResponse": {},
+        "executionContext": "any",
+        "tenantId": "Testing",
+        "createdOn": "2019-02-01T20:24:33.151Z",
+        "id": "Testing"
+    }
+}
