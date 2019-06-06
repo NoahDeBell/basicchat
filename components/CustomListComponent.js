@@ -77,7 +77,7 @@ module.exports = {
                      *      total amount to be reimbursed
                      */
                     conversation.reply(`The expenses for report: ${ selectedReport }`);
-                    conversation.reply(`Report contains ${ numberOfExpenses } of expense(s)`);
+                    conversation.reply(`Report contains ${ numberOfExpenses } expense(s)`);
                     conversation.reply(expensesOut);
                     conversation.reply(`The total amount to be reimbursed: ${ totalAmount }`);
                     conversation.keepTurn(false);

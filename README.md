@@ -58,7 +58,8 @@ With custom component services running, test endpoints like so:
 curl -X GET localhost:3000/components
 
 # invoke custom component where xxx is the name of the component you want to test.
-curl -H "Content-Type: application/json" -d @./tests/test.xxx.json localhost:3000/components/customcomp1
+# componentName => the name of the component you want to test.
+curl -H "Content-Type: application/json" -d @./tests/test.xxx.json localhost:3000/components/componentName
 ```
 
 ## Deployment
